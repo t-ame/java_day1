@@ -29,4 +29,30 @@ public class lab2 {
 		}
 	}
 	
+	//Lab 3.1
+	String manString(String s, int choice) {
+		int len = s.length();
+		switch (choice) {
+		case 1:
+			return s+s;
+			//break;
+		case 2:
+			String n="";
+			for(int i=0; i<len; ++i) {
+				if(i%2 != 0)
+					n+='#';
+				else
+					n+=s.charAt(i);
+			}
+			return n;
+		case 3:
+			break;
+		case 4:
+			break;
+		}
+		
+		
+		return s;
+	}
+	
 }

@@ -1,5 +1,4 @@
 HW Issues:
 
 * Lab 1.3: don’t know path to javadoc so i couldn’t set it.
-* Lab 2.5: Unable to command enum properly. i couldn’t pass an enum argument and didn't know what the default value would be
 * 

@@ -124,12 +124,13 @@ public class Person {
 		System.out.println("Age: "+age);
 		System.out.println("Weight: "+weight);
 		
+		
 		//Lab 2.4
 		if(phoneNumber > 0)
 			System.out.println("Phone Number: "+phoneNumber);
 		
+		
 		//Lab 2.5
-
 		if(gen == Gender.F || gen == Gender.M)
 			System.out.println("Enumerated Gender: "+gen);
 		System.out.println("\n");
