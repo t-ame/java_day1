@@ -50,7 +50,7 @@ public class Person {
 	
 	//Lab 2.5
 	//Parameterized ctor with enum gender
-	public Person(String fname, String lname, Gender gen, int age, float weight, int pnumber) {
+	public Person(String fname, String lname, Gender gen, int age, float weight, long pnumber) {
 		super();
 		this.firstName = fname;
 		this.lastName = lname;
@@ -119,8 +119,8 @@ public class Person {
 		System.out.println("---------------\n");
 		System.out.println("First Name: "+firstName);
 		System.out.println("Last Name: "+lastName);
-		//if(gender != '')
-		System.out.println("Gender: "+gender);
+		if(gender == 'F' || gender == 'M')
+			System.out.println("Gender: "+gender);
 		System.out.println("Age: "+age);
 		System.out.println("Weight: "+weight);
 		
@@ -129,7 +129,10 @@ public class Person {
 			System.out.println("Phone Number: "+phoneNumber);
 		
 		//Lab 2.5
-		System.out.println("Enumerated Gender: "+gen+"\n");
+
+		if(gen == Gender.F || gen == Gender.M)
+			System.out.println("Enumerated Gender: "+gen);
+		System.out.println("\n");
 	}
 	
 }

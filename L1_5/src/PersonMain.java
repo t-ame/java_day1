@@ -10,14 +10,16 @@ public class PersonMain {
 		
 		Person obj1 = new Person("Jane", "Doe", 'F', 25, 240.34f);
 		Person obj2 = new Person("John", "Doe", 'F', 28, 260.8f, 2341473829l);
-		//Person obj3 = new Person("Jane", "Doe", Gender.F, 25, 240.34f, 2341473829l);
+		Person obj3 = new Person("Jane", "Doe", Person.Gender.M, 25, 240.34f, 2341473829l);
 //		lab2 l = new lab2();
 //		
 //		l.checkNumberPositive();
 		
+		//obj3.setGen(Person.Gender.M);
+		
 		obj1.printDetails();
 		obj2.printDetails();
-		//obj3.printDetails();
+		obj3.printDetails();
 		
 	}
 
