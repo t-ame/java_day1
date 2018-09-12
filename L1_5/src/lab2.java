@@ -1,5 +1,6 @@
 
-import java.util.Scanner;
+import java.util.*;
+
 
 
 public class lab2 {
@@ -35,7 +36,6 @@ public class lab2 {
 		switch (choice) {
 		case 1:
 			return s+s;
-			//break;
 		case 2:
 			String n="";
 			for(int i=0; i<len; ++i) {
@@ -46,13 +46,36 @@ public class lab2 {
 			}
 			return n;
 		case 3:
-			break;
+			String ns = "";
+			Set<Character> news = new HashSet<Character>();
+			for(int i=0; i<len; ++i)
+				if(news.add(s.charAt(i)))
+					ns+=s.charAt(i);
+			return ns;
 		case 4:
-			break;
+			String np="";
+			for(int i=0; i<len; ++i) {
+				if(i%2 != 0)
+					np+=Character.toUpperCase(s.charAt(i));
+				else
+					np+=s.charAt(i);
+			}
+			return np;
 		}
-		
-		
 		return s;
 	}
+	
+	
+	//Lab 3.2
+	boolean checkPositiveString(String s) {
+		int len=s.length();
+		for(int i=0; i<len-1; ++i) {
+			if(Character.toLowerCase(s.charAt(i)) > Character.toLowerCase(s.charAt(i+1)))
+				return false;
+		}
+		return true;
+	}
+	
+	
 	
 }
