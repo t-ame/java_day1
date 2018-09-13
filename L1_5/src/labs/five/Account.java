@@ -5,7 +5,7 @@ import java.util.HashMap;
 import labs.four.Person;
 
 
-public class Account {
+abstract public class Account {
 
 	public static long accounts;
 	
@@ -17,53 +17,16 @@ public class Account {
 	private Person accHolder;
 	
 	
-	//Lab 4.2
-	public boolean isSavings;
-	
-
-	
-	public static Account createAccount(Person accH) {
-		Account newacc = new Account();
-		newacc.setAccHolder(accH);
-		newacc.setAccNum(++accounts);
-		newacc.setBalance(500);
-		accountList.put(accounts, newacc);
-		return newacc;
-	}
-	
-
-
-	public static Account createAccount(Person accH, double initBalance) {
-		Account newacc = new Account();
-		newacc.setAccHolder(accH);
-		newacc.setAccNum(++accounts);
-		newacc.setBalance(initBalance);
-		accountList.put(accounts, newacc);
-		return newacc;
-	}
-	
 	
 	public void deposit(double amount) {
 		balance += amount;
 	}
 	
-	public boolean withdraw(double amount) {
-		if(balance - amount < 500) {
-			System.out.println("Insufficient balance.");
-			return false;
-		}
-		balance -= amount;
-		return true;
-	}
 	
 	
-
-	//Lab 4.1e
-	@Override
-	public String toString() {
-		return "Account [accNum=" + accNum + ", balance=" + balance + ", accHolder=" + accHolder + "]";
-	}
-
+	//Lab 5.3
+	abstract boolean withdraw(double amount);
+	
 	
 	
 
@@ -85,11 +48,6 @@ public class Account {
 	public void setAccHolder(Person accHolder) {
 		this.accHolder = accHolder;
 	}
-	
-	
-	
-	
-	
 	
 	
 }
