@@ -11,7 +11,6 @@ public class EmployeeServiceImpl implements EmployeeService{
 	public InsuranceScheme getInsuranceScheme(Employee employee) {
 		
 		int salary = employee.getSalary();
-		Designation des = employee.getDesignation();
 		InsuranceScheme scheme = null;
 		
 		if(salary>5000 && salary<20000)
