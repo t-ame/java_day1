@@ -19,21 +19,26 @@
     <h4 id="sub">Simple. Contemporary. Website Template.</h4>
   </header>
 
-  <ul class="lists">
+  <ul id="list">
     <li>
-      <a href="index.html">Home</a> |
+      <a href="index.html">Home</a> <span style="padding-left: 20px">|</span>
     </li>
     <li>
-      <a href="Examples.html">Examples</a> |
+      <a href="Examples.html">Examples</a> <span style="padding-left: 20px">|</span>
     </li>
+    <li></li>
     <li>
-      <a href="contactus.html">Contact Us</a> |
+      <span style="padding-right: 20px">|</span><a href="contactus.html">Contact Us</a>
     </li>
   </ul>
 </nav>
 
+
 <!--<p id="test">Hello World!!!</p>-->
 <br>
+
+<div id="article">
+
 <article style="margin-left: 100px">
 
 <h1>Examples</h1>
@@ -56,39 +61,24 @@
   <p style="font-style: italic">This is an example of italic text</p>
   <p><a href="Examples.html" style="color: gold">This is a hyperlink</a></p>
 
-
-  <h1>Lists</h1>
-  <p>This is an unordered list:</p>
-
-  <ul>
-    <li>Item 1</li>
-    <br>
-    <li>Item 2</li>
-    <br>
-    <li>Item 3</li>
-    <br>
-    <li>Item 4</li>
-  </ul>
-
-  <p>This is an ordered list:</p>
-
-  <ol>
-    <li>Item 1</li>
-    <br>
-    <li>Item 2</li>
-    <br>
-    <li>Item 3</li>
-    <br>
-    <li>Item 4</li>
-  </ol>
-
   <h1>Images</h1>
+
+  <figure class="images" >
+
+    <img src="img/BabysBreath_FO187_Main.jpg" height="350" width="400"/>
+
+    <figcaption >A beautiful baby's breath</figcaption>
+  </figure>
+
 
 </article>
 
+</div>
+
+<div id="aside">
 
 <nav style="background-color: transparent">
-  <aside>
+  <aside id="ass">
     <h4 style="color: gold">Quick Links:</h4>
     <ul>
       <li style=""><a href="" style="color: gold">Important features</a></li>
@@ -100,9 +90,13 @@
   </aside>
 </nav>
 
+</div>
 
 
-<nav style="alignment: bottom">
+<br>
+<br>
+
+<nav id="footer" style="alignment: bottom">
   <footer>
     <ul class="lists">
       <li><a href="index.html">Home</a></li>
