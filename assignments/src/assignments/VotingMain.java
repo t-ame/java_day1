@@ -9,6 +9,11 @@ import assignments.VotePoller.votingState;
 
 public class VotingMain {
 	
+	public static long minVotingTime = 15l;
+	
+	
+	
+	
 	public static Voter getVote(boolean president) {
 		
 		Scanner scanner = new Scanner(System.in);
@@ -54,10 +59,9 @@ public class VotingMain {
 		while(poller.isOpen()) {
 			Voter voter = getVote(false);
 			if(voter != null) {
-				poller.vote(voter,voter.isInFavour(), (poller.getPeriod() >= 15l));
+				poller.vote(voter,voter.isInFavour(), (poller.getPeriod() >= minVotingTime));
 			}
-
-			if(poller.getPeriod() >= 15l) {
+			if(poller.getPeriod() >= minVotingTime) {
 				System.out.println("Would you like to close the voting? 'yes' or 'no'.");
 				String check = scanner.nextLine();
 				if(check.equals("yes")) {
