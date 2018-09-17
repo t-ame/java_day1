@@ -18,8 +18,7 @@ public class UserComm {
 
 	public InsuranceScheme getEmployeeScheme() {
 		Scanner scanner = new Scanner(System.in);
-		String name, des;
-		Designation designation;
+		String name;
 		int salary;
 		long id;
 		System.out.println("Enter Employee details.\nName: ");
@@ -35,6 +34,8 @@ public class UserComm {
 		
 
 		System.out.println("Scheme: "+scheme);
+		
+		scanner.close();
 		
 		return scheme;
 	}
