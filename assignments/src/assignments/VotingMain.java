@@ -15,7 +15,6 @@ public class VotingMain {
 		int vote =-1;
 		int id =-1;
 		Voter voter = new Voter(id, president);
-		voter.setInFavour(false);
 		
 		if(!president) {
 			System.out.println("Enter Voters ID:");
@@ -28,7 +27,7 @@ public class VotingMain {
 			vote = Integer.parseInt(scanner.nextLine());
 //		}
 		if(vote ==8) {
-			scanner.close();
+//			scanner.close();
 			return voter;
 		} else if (vote ==1) {
 			voter = new Voter(id, president);
@@ -38,7 +37,7 @@ public class VotingMain {
 			voter.setInFavour(false);
 		}
 		
-		scanner.close();
+//		scanner.close();
 		return voter;
 	}
 	
@@ -46,25 +45,35 @@ public class VotingMain {
 	
 	
 	public static void main(String[] args) {
+
+		Scanner scanner = new Scanner(System.in);
 		
 		VotePoller poller = new VotePoller();
-		
 		poller.openVoting();
 		
 		while(poller.isOpen()) {
 			Voter voter = getVote(false);
 			if(voter != null) {
-				poller.vote(voter,voter.isInFavour(), (poller.getPeriod() >= 1l)); //change to 15
+				poller.vote(voter,voter.isInFavour(), (poller.getPeriod() >= 15l));
+			}
+
+			if(poller.getPeriod() >= 15l) {
+				System.out.println("Would you like to close the voting? 'yes' or 'no'.");
+				String check = scanner.nextLine();
+				if(check.equals("yes")) {
+					poller.closeVoting(true);
+				}
 			}
 		}
 		
 		if(poller.getState() == votingState.TIED) {
 			System.out.println("Enter vote for Vice-President:");
 			Voter voter = getVote(true);
+			if(voter.getId() <0)
+				poller.closeVoting(true);
 			poller.vote(voter, voter.isInFavour(), true);
 		}
-		
-		poller.closeVoting(true);
+//		scanner.close();
 	}
 	
 	

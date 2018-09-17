@@ -1,11 +1,10 @@
 package assignments;
 
-//import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-//import java.util.HashSet;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +16,7 @@ public class VotePoller {
 	static private final int maxVotes = 101;
 	static private int noOfVotes;
 	static private Map<String, Integer> votes;
-	private Set<Integer> votersID;
+	private Set<Integer> votersID=new HashSet<Integer>();
 	
 	LocalDateTime startTime;
 	LocalDateTime endTime;

@@ -3,7 +3,7 @@ package assignments;
 public class Voter {
 	private int id;
 	private boolean isPresident = false;
-	private boolean inFavour ;
+	private boolean inFavour =false;
 	
 	
 	public Voter(int id, boolean president) {
