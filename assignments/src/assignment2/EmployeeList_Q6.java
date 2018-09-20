@@ -36,6 +36,21 @@ public class EmployeeList_Q6 {
 		
 		
 		
+		//SORTING THE EMPLOYEES BASED ON THE FIRST LETTER OF THE FIRST NAME.
+		//I'M NOT YET SURE HOW TO OVERLOAD THE '<' AND '>' OPERATORS FOR AN ENTIRE STRING...
+		ArrayList<Employees> emplist = new ArrayList<Employees>();
+		
+		emplist.add(new Employees("Yash","Sundar"));
+		emplist.add(new Employees("Payal","Bansal"));
+		emplist.add(new Employees("Krishna","Raju"));
+		emplist.add(new Employees("Navneet","Singh"));
+		emplist.add(new Employees("Huy","Thai"));
+		
+		
+		emplist.sort(new ComparatorImpl());
+		
+		System.out.println(emplist);
+		
 		
 		
 	}
@@ -45,45 +60,6 @@ public class EmployeeList_Q6 {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//class EmpListTest {
-//	
-//	
-//	public static void main(String[] args) {
-//
-//		ArrayList<Employees> emplist = new ArrayList<Employees>();
-//		
-//		emplist.add(new Employees("Yash","Sundar"));
-//		emplist.add(new Employees("Payal","Bansal"));
-//		emplist.add(new Employees("Krishna","Raju"));
-//		emplist.add(new Employees("Navneet","Singh"));
-//		emplist.add(new Employees("Huy","Thai"));
-//		
-//		
-//		emplist.sort(new ComparatorImpl());
-//		
-//		
-//		
-//		System.out.println(emplist);
-//	}
-//	
-//	
-//	
-//}
 
 
 
@@ -106,7 +82,6 @@ class ComparatorImpl implements Comparator<Employees>{
 
 
 
-
 class Employees{
 	
 	String firstName;
@@ -124,16 +99,6 @@ class Employees{
 	
 }
 
-
-
-
-
-
-
-
-//employee -> first name n last name
-//sort by first name
-//using caomparable and comparator
 
 
 

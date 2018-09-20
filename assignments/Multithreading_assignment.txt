@@ -1,0 +1,130 @@
+Q1) Is the volatile modifier required when working with locks to guarantee memory visibility? 
+
+	(ans): 
+
+
+Q2)  I've found these two ways to write threads:
+
+With implements Runnable:
+
+public class MyRunnable implements Runnable {
+    public void run() {
+        //Code
+    }
+}
+//Started with a "new Thread(new MyRunnable()).start()" call
+Or, with extends Thread:
+
+public class MyThread extends Thread {
+    public MyThread() {
+        super("MyThread");
+    }
+    public void run() {
+        //Code
+    }
+}
+//Started with a "new MyThread().start()" call
+Is there any significant difference in these two blocks of code ?
+
+	(ans): Yes. The implementation of the 'Runnable' interface allows the class to extend another class.
+
+
+Q3) Please create a daemon thread in java which is printing current time on console after every 1 second till your main program is running. (You can write any code in ur main method to be executed by ur main thread)
+
+	(ans): 
+
+Q4) public void foo() {
+    synchronized (this) {
+        // do something thread-safe
+    }
+}
+and:
+
+public synchronized void foo() {
+    // do something thread-safe
+}
+Are these two codes same or any difference in them? Should we use synchronized(this) in our code? 
+
+Please explain why or why not?
+
+	(ans): 
+
+
+Q5) What is the difference in wait and sleep methods in java?
+
+	(ans): 'sleep' has a fixed time and automatically wakes up, whereas 'wait' has to remain asleep until 	the 'notify' method has been called before the thread wakes up, no matter how long it takes.
+
+
+Q6) What is the difference in notify and notify all?
+
+	(ans): 
+
+
+Q7) What is the difference in class lock and the object lock?
+
+	(ans): 
+
+
+Q8) How many threads can a Java VM support? Does this vary by vendor? by operating system? other factors? Is it always better to write a code using multithreading or are there any disadvantages of doing multithreading?
+
+	(ans): 
+
+
+Q9) Is it correct to say that static means one copy of the value for all objects and volatile means one copy of the value for all threads?
+
+Anyway a static variable value is also going to be one value for all threads, then why should we go for volatile?
+
+	(ans): 
+
+
+Q10) What is an InterruptedException? 
+
+
+What is the difference between the following ways of handling InterruptedException? What is the best way to do it?
+
+try{
+ //...
+} catch(InterruptedException e) { 
+   Thread.currentThread().interrupt(); 
+}
+OR
+
+try{
+ //...
+} catch(InterruptedException e) {
+   throw new RuntimeException(e);
+}
+
+	(ans): The second method is throwing an exception that will cause the program to stop executing 		whereas the first method is calling the 'interrupt' method on the thread. the first method is the 	better way of handling it.
+
+
+Q11) When do we use AtomicReference?
+
+Is it needed to create objects in all multithreaded programs?
+
+Provide a simple example where AtomicReference should be used.
+
+	(ans): 
+
+
+Q12) How I can pass a parameter to a thread? Also, how does it work for anonymous classes?
+
+	(ans): 
+
+Q13) 
+What is the best way to implement Singleton in Java, in a multithreaded environment?
+What happens when multiple threads try to access getInstance() method at the same time?
+Can we make singleton's getInstance() synchronized?
+Is synchronization really needed, when using Singleton classes?
+
+	(ans): 
+	- The best way to implement a singleton in a multithread environment is by ensuring that a single 	thread can only create one object. I would keep a static set of all the names of the threads creating 	an object of the class, and if the thread name already exists in the set, it wouldn't create a new 	object.
+	- Trying to access the genInstance() method at the same time is not thread safe as it is a static 	method and therefore deals with static data. This can lead to inconsistencies.
+	- yes, the getInstance() method can be made 'synchronized'.
+	- No, it's not needed, all you need to do is check if the thread is already in the set and then add 	it, there's no reason why both methods must happen together. another thread altering the set will 	make no difference to the current thread.
+
+
+
+
+
+
