@@ -6,6 +6,12 @@ package assignment2;
 public class StartWithEndWith_Q7{
 
 	
+	public boolean startsWith() {
+		
+		return true;
+	}
+	
+	
 	
 	
 	
