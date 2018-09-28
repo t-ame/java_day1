@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Q3_Solution {
 
@@ -24,6 +25,11 @@ public class Q3_Solution {
 	int streamString(String text, int k) {
 		
 		List<String> strings = new ArrayList<>(Arrays.asList(text.split(" ")));
+		
+		for(String s : strings) {
+			if (s.length()>k)
+				return -1;
+		}
 		
 		int  count = 0;
 		
@@ -49,6 +55,9 @@ public class Q3_Solution {
 		
 		System.out.println(new Q3_Solution().streamString("sms messages are really short", 12));
 		
+		System.out.println(new Q3_Solution().streamString("Yashoda just walked into class!!! woooww!", 12));
+		
+		System.out.println(new Q3_Solution().streamString("Yashoda just walked into class!!! woooww!", 7));
 	}
 	
 }
