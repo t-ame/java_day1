@@ -40,6 +40,7 @@ public class EditProfileServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		
 		HttpSession session = request.getSession();
 		if (session == null) {
 			response.sendError(403);
@@ -49,15 +50,10 @@ public class EditProfileServlet extends HttpServlet {
 
 		if (request.getRequestURI().contains("editprofile")) {
 
-			Account account = null;
-
-			if (user.isAdmin()) {
-				account = user.getAccount();
-			} else {
-				account = user.getAccount();
-			}
+			Account account = user.getAccount();
+			
 			session.setAttribute("account", account);
-			request.getRequestDispatcher("/views/EditProfile.jsp").forward(request, response);
+			request.getRequestDispatcher("EditProfile.jsp").forward(request, response);
 
 		} else if (request.getRequestURI().contains("saveprofile")) {
 
@@ -69,7 +65,7 @@ public class EditProfileServlet extends HttpServlet {
 				}
 			} catch (GeneralException e) {
 				request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-				request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 		}
 	}

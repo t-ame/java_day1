@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 public class BookedFlight {
 
 	private int id;
+	private int userId;
+	private int flightId;
 	private String airline;
 	private String passengerName;
 	private String from;
@@ -81,6 +83,22 @@ public class BookedFlight {
 		} else {
 			return arrivalTime.format(formatter);
 		}
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getFlightId() {
+		return flightId;
+	}
+
+	public void setFlightId(int flightId) {
+		this.flightId = flightId;
 	}
 
 }

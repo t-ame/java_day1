@@ -12,7 +12,7 @@
 
 	<form action="/jsptojsp" name="flight_booking_form" id="flight_booking_form" method="post">
 	
-		<label for="full_name">Full Name: </label>
+		<label for="full_name">Passenger Name: </label>
 		<input type="text" name="full_name" required>
 		
 		<label for="mobile">Mobile: </label>
@@ -23,17 +23,17 @@
 		<br>
 	
 		<label for="departure">Departure: </label>
-		<input type="text" name="departure" readonly value="${sessionScope.flight.departure}">
+		<input type="text" name="departure" readonly value="${sessionScope.flight.from}">
 		
 		<label for="departure_time">Time: </label>
-		<input type="text" name="departure_time" readonly value="${sessionScope.flight.departureDateFormat}"> 
+		<input type="text" name="departure_time" readonly value="${sessionScope.flight.departureTime}"> 
 		<br>
 		
 		<label for="arrival">Arrival: </label>
-		<input type="text" name="arrival" readonly value="${sessionScope.flight.destination}">
+		<input type="text" name="arrival" readonly value="${sessionScope.flight.to}">
 		
 		<label for="arrival_time">Time: </label>
-		<input type="text" name="arrival_time" readonly value="${sessionScope.flight.arrivalDateFormat}">
+		<input type="text" name="arrival_time" readonly value="${sessionScope.flight.arrivalTime}">
 		
 		<input type="hidden" name="foward_jsp" id="foward_jsp" value="PaymentPage.jsp">
 		

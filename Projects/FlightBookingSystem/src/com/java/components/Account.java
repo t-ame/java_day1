@@ -75,7 +75,7 @@ public class Account {
 		this.gender = gender;
 	}
 
-	public void setDob() {
+	private void setDob() {
 		dob = dateOfBirth.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
 	}
 

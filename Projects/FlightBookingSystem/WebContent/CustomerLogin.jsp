@@ -12,8 +12,8 @@
 		
 		<h5 style="color: 'Red'">${requestScope.errorMsg}</h5>
 		
-		<label for="userName">User Name: </label>
-		<input type="text" name="userName" id="userName" required>
+		<label for="userName">Email: </label>
+		<input type="email" name="userName" id="userName" required>
 		
 		<label for="password">Password: </label>
 		<input type="password" name="password" id="password" required>

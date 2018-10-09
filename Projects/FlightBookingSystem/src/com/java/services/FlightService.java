@@ -5,59 +5,62 @@ import java.util.List;
 
 import com.java.components.BookedFlight;
 import com.java.components.FlightTemplate;
-import com.java.components.ScheduledFlight;
+//import com.java.components.ScheduledFlight;
 import com.java.exception.GeneralException;
+import com.java.repositories.FlightRepository;
 
 public class FlightService {
 
-	public ScheduledFlight getFlightById(int id) throws GeneralException {
+	private final FlightRepository repository;
 
-		return null;
+	public FlightService() {
+		super();
+		repository = FlightRepository.getFlightRepository();
 	}
 
-	public FlightTemplate getSchedFlightById(int id) throws GeneralException {
-
-		return null;
+	public FlightTemplate getFlightById(int id) throws GeneralException {
+		return repository.getFlightById(id);
 	}
 
-	public List<ScheduledFlight> getAllFlightsBetween(String departure, String arrival, LocalDate date)
+	public List<FlightTemplate> getAllFlightsBetween(String departure, String arrival, LocalDate date)
 			throws GeneralException {
-
-		return null;
+		return repository.getAllFlightsBetween(departure, arrival, date);
 	}
 
 	public void addBooking(BookedFlight flight) throws GeneralException {
-
+		repository.addBooking(flight);
 	}
 
 	public void addFlight(FlightTemplate flight) throws GeneralException {
-
+		repository.addFlight(flight);
 	}
 
-	public void editFlight(FlightTemplate flight) throws GeneralException {
-
+	public void updateFlight(FlightTemplate flight) throws GeneralException {
+		repository.updateFlight(flight);
 	}
 
 	public void deleteFlight(int flightId) throws GeneralException {
-
+		repository.deleteFlight(flightId);
 	}
 
 	// used by customer to view booking
 	public BookedFlight getBooking(int id) throws GeneralException {
-
-		return null;
+		return repository.getBooking(id);
 	}
 
 	// to be used by Admin
 	public List<FlightTemplate> getAllFlights() throws GeneralException {
-
-		return null;
+		return repository.getAllFlights();
 	}
 
 	// to be used by Admin
 	public List<BookedFlight> getAllBookings() throws GeneralException {
 
-		return null;
+		return repository.getAllBookings();
+	}
+
+	public String getErrorMsg() {
+		return repository.getErrorMsg();
 	}
 
 }

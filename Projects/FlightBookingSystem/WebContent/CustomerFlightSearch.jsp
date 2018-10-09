@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false"%>
-<%@ page import="java.util.List, com.java.components.ScheduledFlight"%>
+<%@ page import="java.util.List"%>
 <!DOCTYPE html>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -52,10 +52,12 @@
          <table>
 	         <thead>
 		         <tr>
+		         	<td>Airline</td>
 		         	<td>Departure</td>
 		         	<td>Destination</td>
 		         	<td>Departure Time</td>
 		         	<td>Arrival Time</td>
+		         	<td>Available Seats</td>
 		         	<td>Cost</td>
 		         	<td>            </td>
 		         </tr>
@@ -64,10 +66,12 @@
 	         <tbody>
 				<c:forEach items="${sessionScope.flights}" var="flight">
 			    <tr> 
-		         	<td><c:out value="${flight.departure}"/></td>
-		         	<td><c:out value="${flight.destination}"/></td>
-		         	<td><c:out value="${flight.departureDateFormat}"/></td>
-		         	<td><c:out value="${flight.arrivalDateFormat}"/></td>
+		         	<td><c:out value="${flight.airline}"/></td>
+		         	<td><c:out value="${flight.from}"/></td>
+		         	<td><c:out value="${flight.to}"/></td>
+		         	<td><c:out value="${flight.departureTime}"/></td>
+		         	<td><c:out value="${flight.arrivalTime}"/></td>
+		         	<td><c:out value="${flight.availableSeats}"/></td>
 		         	<td><c:out value="'$'${flight.cost}"/></td>
 		         	<td><a href="/booking/${flight.id}">Select</a> </td>
 			    </tr>

@@ -19,8 +19,8 @@
 		<label for="last_name">Last Name: </label>
 		<input type="text" name="last_name" id="last_name" required>
 		
-		<label for="userName">User Name: </label>
-		<input type="text" name="userName" id="userName" required>
+		<label for="userName">Email: </label>
+		<input type="email" name="userName" id="userName" required>
 		
 		<label for="password">Password: </label>
 		<input type="password" name="password" id="password" required>

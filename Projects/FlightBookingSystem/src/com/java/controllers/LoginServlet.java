@@ -36,6 +36,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 
 		String username = (String) request.getAttribute("userName");
 		String password = (String) request.getAttribute("password");
@@ -56,23 +57,23 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute("isAdmin", isAdmin);
 		} catch (GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-			request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 		}
 
 		if (user != null) {
 			if (isAdmin) {
-				if (user.getPassword().equals(password)) {
-					request.getRequestDispatcher("/views/AdminHome.jsp").forward(request, response);
+				if (user.getAccount().getPassword().equals(password)) {
+					request.getRequestDispatcher("AdminHome.jsp").forward(request, response);
 				} else {
 					request.setAttribute("errorMsg", "Invalid username or password!");
-					request.getRequestDispatcher("/views/AdminLogin.jsp").forward(request, response);
+					request.getRequestDispatcher("AdminLogin.jsp").forward(request, response);
 				}
 			} else {
-				if (user.getPassword().equals(password)) {
-					request.getRequestDispatcher("/views/CustomerHome.jsp").forward(request, response);
+				if (user.getAccount().getPassword().equals(password)) {
+					request.getRequestDispatcher("CustomerHome.jsp").forward(request, response);
 				} else {
 					request.setAttribute("errorMsg", "Invalid username or password!");
-					request.getRequestDispatcher("/views/CustomerLogin.jsp").forward(request, response);
+					request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
 				}
 			}
 		}

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.java.components.FlightTemplate;
-import com.java.components.ScheduledFlight;
 import com.java.exception.GeneralException;
 import com.java.services.FlightService;
 
@@ -53,14 +52,19 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 			FlightTemplate flight = new FlightTemplate(airline, source, destination, departureDate, arrivalDate, seats,
 					price);
 
+			if((boolean)request.getAttribute("update")) {
+				request.setAttribute("flight", flight);
+				return;
+			}
+			
 			try {
 				flight_service.addFlight(flight);
 			} catch (GeneralException e) {
 				request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-				request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 			request.setAttribute("successMsg", "You have successfully updated the flights");
-			request.getRequestDispatcher("/views/SuccessPage.jsp").forward(request, response);
+			request.getRequestDispatcher("SuccessPage.jsp").forward(request, response);
 
 		} else if (request.getRequestURI().contains("changeflight")) {
 			List<FlightTemplate> flights = null;
@@ -70,14 +74,14 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 				flights = flight_service.getAllFlights();
 			} catch (GeneralException e) {
 				request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-				request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 			if (session != null)
 				session.setAttribute("flights", flights);
 			if (flights == null) {
 				request.setAttribute("errorMsg", "There are no scheduled flights.");
 			}
-			request.getRequestDispatcher("/views/AdminDisplayAllFlights.jsp").forward(request, response);
+			request.getRequestDispatcher("AdminDisplayAllFlights.jsp").forward(request, response);
 
 		} else if (request.getRequestURI().contains("editflight")) {
 
@@ -88,18 +92,25 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 
 			try {
 				flightId = Integer.parseInt(pathInfo[pathInfo.length - 1]);
-				flight = flight_service.getSchedFlightById(flightId);
+				flight = flight_service.getFlightById(flightId);
 				request.setAttribute("flight", flight);
-				request.getRequestDispatcher("/views/AdminEditFlight.jsp").forward(request, response);
+				request.getRequestDispatcher("AdminEditFlight.jsp").forward(request, response);
 			} catch (NumberFormatException e) {
 				response.sendError(404);
 				return;
 			} catch (GeneralException e) {
 				request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-				request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 		} else if (request.getRequestURI().contains("update")) {
-			request.getRequestDispatcher("/addflight").forward(request, response);
+			request.setAttribute("update", true);
+			request.getRequestDispatcher("/addflight").include(request, response);
+			try {
+				flight_service.updateFlight((FlightTemplate)request.getAttribute("flight"));
+			} catch (GeneralException e) {
+				request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
+			}
 		} else if (request.getRequestURI().contains("deleteflight")) {
 			String[] pathInfo = request.getRequestURI().split("/");
 			System.out.println(pathInfo[pathInfo.length - 1]);
@@ -113,10 +124,10 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 				return;
 			} catch (GeneralException e) {
 				request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-				request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 			request.setAttribute("successMsg", "You have successfully Deleted the flight");
-			request.getRequestDispatcher("/views/SuccessPage.jsp").forward(request, response);
+			request.getRequestDispatcher("SuccessPage.jsp").forward(request, response);
 		}
 	}
 

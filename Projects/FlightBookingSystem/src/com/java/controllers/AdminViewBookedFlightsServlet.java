@@ -35,6 +35,7 @@ public class AdminViewBookedFlightsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		
 		List<BookedFlight> flights = null;
 		
@@ -45,13 +46,13 @@ public class AdminViewBookedFlightsServlet extends HttpServlet {
 				session.setAttribute("flights", flights);
 		} catch (GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-			request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 		}
 		
 		if(flights == null) {
 			request.setAttribute("errorMsg", "No Booked flights.");
 		}
-		request.getRequestDispatcher("/views/AdminDisplayBookedFlights.jsp").forward(request, response);
+		request.getRequestDispatcher("AdminDisplayBookedFlights.jsp").forward(request, response);
 	}
 
 	/**

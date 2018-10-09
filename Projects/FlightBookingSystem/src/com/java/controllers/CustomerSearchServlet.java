@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.java.components.ScheduledFlight;
+import com.java.components.FlightTemplate;
+//import com.java.components.ScheduledFlight;
 import com.java.exception.GeneralException;
 import com.java.services.FlightService;
 
@@ -41,6 +42,7 @@ public class CustomerSearchServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		
 		String departure = (String) request.getAttribute("departure");
 		String arrival = (String) request.getAttribute("destination");
 		LocalDate date = LocalDate.parse((String) request.getAttribute("departure_date"),
@@ -48,13 +50,13 @@ public class CustomerSearchServlet extends HttpServlet {
 		if (!date.isBefore(LocalDate.now())) {
 			request.setAttribute("errorMsg", "Departure date must be a future date!");
 		}
-		List<ScheduledFlight> flightList = null;
+		List<FlightTemplate> flightList = null;
 		
 		try {
 			flightList = service.getAllFlightsBetween(departure, arrival, date);
 		} catch (GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-			request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 		}
 		
 		if (flightList != null) {
@@ -65,7 +67,7 @@ public class CustomerSearchServlet extends HttpServlet {
 		} else {
 			request.setAttribute("errorMsg", "No flights found!!!");
 		}
-		request.getRequestDispatcher("/views/CustomerFlightSearch.jsp").forward(request, response);
+		request.getRequestDispatcher("CustomerFlightSearch.jsp").forward(request, response);
 	}
 
 	/**

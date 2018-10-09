@@ -1,39 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" isELIgnored="false"%>
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Registration</title>
+<title>User Profile</title>
 </head>
 <body>
 
 
-	<form id="reg_form" action="/registration" method="post">
+
+	<form action="/saveprofile" method="post">
 		
-		<h5 style="color: 'Red'">${requestScope.errorMsg}</h5>
+		<%-- <h5 style="color: 'Red'">${requestScope.errorMsg}</h5> --%>
 		
 		<label for="first_name">First Name: </label>
-		<input type="text" name="first_name" id="first_name" required>
+		<input type="text" name="first_name" id="first_name" required value="${sessionScope.account.firstName}">
 		
 		<label for="last_name">Last Name: </label>
-		<input type="text" name="last_name" id="last_name" required>
+		<input type="text" name="last_name" id="last_name" required value="${sessionScope.account.lastName}">
 		
 		<label for="userName">User Name: </label>
-		<input type="text" name="userName" id="userName" required>
+		<input type="text" name="userName" id="userName" readonly value="${sessionScope.account.userName}">
 		
 		<label for="password">Password: </label>
-		<input type="password" name="password" id="password" required>
+		<input type="password" name="password" id="password" required value="${sessionScope.account.password}">
 		
 		<label for="date_of_birth">Date of Birth: </label>
-		<input type="date" name="date_of_birth" id="date_of_birth" required placeholder="yyyy-MM-dd">
+		<input type="date" name="date_of_birth" id="date_of_birth" required placeholder="yyyy-MM-dd" value="${sessionScope.account.dob}">
 		
 		<label for="gender">Gender: </label>
 		<input type="radio" name="gender" value="female">Female
 		<input type="radio" name="gender" value="male">Male
 		
 		<label for="street_address">Street Address: </label>
-		<input type="text" name="street_address"required>
+		<input type="text" name="street_address"required value="${sessionScope.account.address}">
 		<br>
 		<input type="text" name="address_line_2">
 		<br>
@@ -56,13 +57,12 @@
 		<label for="zip_code">Zip Code: </label>
 		<input type="number" name="zip_code" id="zip_code" required>
 		
-		<input type="hidden" name="isAdmin" id="isAdmin" value="false">
+		<input type="hidden" name="isAdmin" id="isAdmin" value="${sessionScope.user.isAdmin}">
 		
-		<button type="submit" id="loginButton">Register</button>
+		<button type="submit" id="loginButton">Save</button>
 		<button type='<jsp:forward page="index.jsp"></jsp:forward>' id="cancelButton">Cancel</button>
 	
 	</form>
-
 
 
 

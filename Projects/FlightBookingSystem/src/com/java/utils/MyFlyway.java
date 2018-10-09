@@ -1,48 +1,37 @@
 package com.java.utils;
 
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
 import org.flywaydb.core.Flyway;
 
-public class MyFlyway extends Flyway {
+import com.java.exception.GeneralException;
 
-	private BasicDataSource ds;
-	private String url = "jdbc:oracle:thin:@localhost:1521:ORCL12C";
-	private String username = "sys as sysdba";
-	private String password = "oracle";
-	private String driverName = "oracle.jdbc.driver.OracleDriver";
+@WebListener
+public class MyFlyway implements ServletContextListener {
 
-	static Flyway flyway = null;
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		try {
 
-	private MyFlyway() {
-		super();
-		configureDS();
+			Flyway flyway = new Flyway();
 
-		this.setBaselineOnMigrate(true);
-		this.setValidateOnMigrate(true);
-		this.setLocations("classpath:/migration");
-		this.setDataSource(ds);
-	}
+			flyway.setBaselineOnMigrate(true);
+			flyway.setValidateOnMigrate(true);
+			flyway.setLocations("classpath:/com.db.migrate");
+			flyway.setDataSource(MyDataSource.getDataSource());
 
-	private void configureDS() {
-		ds.setUrl(url);
-		ds.setPassword(password);
-		ds.setUsername(username);
-		ds.setDriverClassName(driverName);
-		ds.setMaxIdle(20);
-		ds.setMaxConnLifetimeMillis(3000);
-		ds.setMaxTotal(100);
-		ds.setMaxWaitMillis(3000);
-	}
+			flyway.migrate();
 
-	//confirm synchronized necessary...
-	public static Flyway getFlyway() {
-		if (flyway == null) {
-			synchronized (MyFlyway.class) {
-				if (flyway == null)
-					flyway = new MyFlyway();
-			}
+		} catch (GeneralException e) {
+			event.getServletContext().setAttribute("migration", "Error occured during migration: "+e.getMessage());
 		}
-		return flyway;
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+
 	}
 
 }

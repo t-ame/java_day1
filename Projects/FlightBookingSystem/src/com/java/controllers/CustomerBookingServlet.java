@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.java.components.BookedFlight;
-import com.java.components.ScheduledFlight;
+import com.java.components.FlightTemplate;
 import com.java.components.User;
 import com.java.exception.GeneralException;
 import com.java.services.CustomerService;
@@ -39,6 +39,9 @@ public class CustomerBookingServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+
+		HttpSession session = request.getSession();
+		
 		if(request.getRequestURI().contains("booking")) {
 			String[] pathInfo = request.getRequestURI().split("/");
 			
@@ -50,48 +53,48 @@ public class CustomerBookingServlet extends HttpServlet {
 				response.sendError(404);
 				return;
 			}
-			ScheduledFlight flight;
+			FlightTemplate flight;
 			try {
 				flight = flight_service.getFlightById(flightId);
 				if(flight.hasRoom()) {
-					HttpSession session = request.getSession();
 					if(session != null)
 						session.setAttribute("flight", flight);
-					request.getRequestDispatcher("/views/CustomerFlightBooking.jsp").forward(request, response);
+					request.getRequestDispatcher("CustomerFlightBooking.jsp").forward(request, response);
 				} else {
 					request.setAttribute("errorMsg", "Selected flight is full.");
-					request.getRequestDispatcher("/views/CustomerFlightSearch.jsp").forward(request, response);
+					request.getRequestDispatcher("CustomerFlightSearch.jsp").forward(request, response);
 				}
 			} catch (GeneralException e) {
 				request.setAttribute("exceptionMsg","Something went wrong: "+e.getMessage());
-				request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 		} else if (request.getRequestURI().contains("flightbook")) {
-			HttpSession session = request.getSession();
 			if(session != null) {
 				try {
-					User user = cust_service.getUser((String)session.getAttribute("username"));
-					ScheduledFlight flight = (ScheduledFlight)session.getAttribute("flight");
+					User user = (User)session.getAttribute("userdetails");
+					FlightTemplate flight = (FlightTemplate)session.getAttribute("flight");
 					BookedFlight flightTemp =  new BookedFlight();
 					
+					flightTemp.setUserId(user.getId());
+					flightTemp.setFlightId(flight.getId());
 					flightTemp.setPassengerName((String)request.getAttribute("full_name"));
-					
-					flightTemp.setArrivalTime(flight.getArrivalDate());
-					flightTemp.setDepartureTime(flight.getDepartureDate());
-					flightTemp.setFrom(flight.getDeparture());
-					flightTemp.setTo(flight.getDestination());
+					flightTemp.setAirline(flight.getAirline());
+					flightTemp.setArrivalTime(flight.getArrivalTime());
+					flightTemp.setDepartureTime(flight.getDepartureTime());
+					flightTemp.setFrom(flight.getFrom());
+					flightTemp.setTo(flight.getTo());
 					flight_service.addBooking(flightTemp);
 
 					request.setAttribute("successMsg","You have successfully booked your flight");
-					request.getRequestDispatcher("/views/SuccessPage.jsp").forward(request, response);
+					request.getRequestDispatcher("SuccessPage.jsp").forward(request, response);
 					
 				} catch (GeneralException e) {
 					request.setAttribute("exceptionMsg","Something went wrong: "+e.getMessage());
-					request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+					request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 				}
 				
 			} else {
-				request.getRequestDispatcher("/views/CustomerLogin.jsp").forward(request, response);
+				request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
 			}
 		}
 		

@@ -76,19 +76,19 @@ public class RegistrationServlet extends HttpServlet {
 			account.setGender(Account.Gender.MALE);
 		}
 
-		User user = new User(firstName, lastName, password, isAdmin, account);
+		User user = new User(isAdmin, account);
 
 		try {
 			if (isAdmin) {
 				adminservice.addUser(user);
-				request.getRequestDispatcher("/views/AdminLogin.jsp").forward(request, response);
+				request.getRequestDispatcher("AdminLogin.jsp").forward(request, response);
 			} else {
 				customerservice.addUser(user);
-				request.getRequestDispatcher("/views/CustomerLogin.jsp").forward(request, response);
+				request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
 			}
 		} catch (GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-			request.getRequestDispatcher("/views/ErrorPage.jsp").forward(request, response);
+			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 		}
 
 	}

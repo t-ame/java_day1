@@ -37,10 +37,20 @@
 		
 		<br>
 		
-		<label for="depart_time">Time: </label>
+		<label for="airline">Airline: </label>
+		<input type="date" name="airline" required value="${requestScope.flight.airline}">
+		
+		<label for="source">Source: </label>
+		<input type="date" name="source" required value="${requestScope.flight.from}">
+		
+		<label for="destination">Destination: </label>
+		<input type="date" name="destination" required value="${requestScope.to}">
+		<br>
+		
+		<label for="depart_time">Departure Time: </label>
 		<input type="date" name="depart_time" required value="${requestScope.flight.parseDate(0)}">
 		
-		<label for="arrive_time">Time: </label>
+		<label for="arrive_time">Arrival Time: </label>
 		<input type="date" name="arrive_time" required value="${requestScope.flight.parseDate(1)}">
 		<br>
 		

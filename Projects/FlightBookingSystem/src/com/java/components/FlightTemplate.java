@@ -5,14 +5,15 @@ import java.time.format.DateTimeFormatter;
 
 public class FlightTemplate {
 
-	public int id;
-	public String airline;
-	public String from;
-	public String to;
-	public LocalDateTime departureTime;
-	public LocalDateTime arrivalTime;
-	public int seats;
-	public float price;
+	private int id;
+	private String airline;
+	private String from;
+	private String to;
+	private LocalDateTime departureTime;
+	private LocalDateTime arrivalTime;
+	private int seats;
+	private int availableSeats;
+	private float price;
 
 	public FlightTemplate() {
 		super();
@@ -28,6 +29,18 @@ public class FlightTemplate {
 		this.arrivalTime = arrivalTime;
 		this.seats = seats;
 		this.price = price;
+	}
+	
+	public boolean hasRoom() {
+		return availableSeats > 0;
+	}
+
+	public void addReservation() {
+
+	}
+
+	public void cancelReservation() {
+
 	}
 
 	public String getAirline() {
@@ -88,6 +101,14 @@ public class FlightTemplate {
 
 	public int getId() {
 		return id;
+	}
+
+	public int getAvailableSeats() {
+		return availableSeats;
+	}
+
+	public void setAvailableSeats(int availableSeats) {
+		this.availableSeats = availableSeats;
 	}
 
 	public void setId(int id) {
