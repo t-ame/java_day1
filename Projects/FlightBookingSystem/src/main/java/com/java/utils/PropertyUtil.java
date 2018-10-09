@@ -12,8 +12,9 @@ public class PropertyUtil {
 		Properties p = new Properties();
 		
 		try {
-			p.load(PropertyUtil.class.getResourceAsStream("classpath:/database.properties"));
-		} catch (IOException e) {
+			p.load(PropertyUtil.class.getResourceAsStream("/database.properties"));
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new GeneralException("Could not read property file: "+e.getMessage());
 		}
 		
