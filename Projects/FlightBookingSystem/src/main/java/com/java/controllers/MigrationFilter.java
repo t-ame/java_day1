@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Servlet Filter implementation class MigrationFilter
@@ -34,11 +36,14 @@ public class MigrationFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
-		String msg = (String)request.getServletContext().getAttribute("migration");
+		HttpServletRequest req = (HttpServletRequest)request;
+		HttpServletResponse resp = (HttpServletResponse)response;
+		
+		String msg = (String)(req).getServletContext().getAttribute("migration");
 		
 		if (msg != null) {
 			request.setAttribute("exceptionMsg", msg);
-			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
+			request.getRequestDispatcher("ErrorPage.jsp").forward(req, resp);
 		}
 		
 		chain.doFilter(request, response);
