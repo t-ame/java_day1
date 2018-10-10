@@ -27,8 +27,8 @@ import com.java.services.CustomerService;
 public class RegistrationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private CustomerService customerservice;
-	private AdminService adminservice;
+	private CustomerService customerservice = new CustomerService();
+	private AdminService adminservice = new AdminService();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -47,30 +47,32 @@ public class RegistrationServlet extends HttpServlet {
 
 //		To convert java.util.Date to java.sql.Date, just use its constructor.
 //		preparedStatement.setDate(0, new java.sql.Date(date.getTime()));
-
-		String firstName = (String) request.getAttribute("first_name");
-		String lastName = (String) request.getAttribute("last_name");
-		String username = (String) request.getAttribute("userName");
-		String password = (String) request.getAttribute("password");
-		boolean isAdmin = (boolean) request.getAttribute("isAdmin");
+		
+		String firstName = request.getParameter("first_name");
+		String lastName = request.getParameter("last_name");
+		String username = request.getParameter("userName");
+		String password = request.getParameter("password");
+		boolean isAdmin;
+		if (request.getParameter("isAdmin").equalsIgnoreCase("true")) {
+			isAdmin = true;
+		} else {
+			isAdmin = false;
+		}
 
 		Account account = new Account();
-		String address = (String) request.getAttribute("street_address") + ", ";
-		if (!((String) request.getAttribute("address_line_2")).isEmpty())
-			address += (String) request.getAttribute("address_line_2") + ", ";
-		if (!((String) request.getAttribute("address_line_3")).isEmpty())
-			address += (String) request.getAttribute("address_line_3") + ", ";
-		address += (String) request.getAttribute("city") + ", " + (String) request.getAttribute("state") + " "
-				+ (String) request.getAttribute("zip_code");
 
-		account.setDateOfBirth(LocalDate.parse((String) request.getAttribute("date_of_birth"),
+		System.out.println(LocalDate.parse(request.getParameter("date_of_birth"),
+				DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		
+		account.setDateOfBirth(LocalDate.parse(request.getParameter("date_of_birth"),
 				DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 		account.setFirstName(firstName);
 		account.setLastName(lastName);
 		account.setPassword(password);
 		account.setUserName(username);
-		account.setAddress(address);
-		if (((String) request.getAttribute("gender")).equalsIgnoreCase("female")) {
+		account.setConcatAddress(request.getParameter("street_address") +"!"+request.getParameter("address_line_2")+"!"+
+					request.getParameter("state")+" "+request.getParameter("country")+" "+request.getParameter("zip_code"));
+		if (request.getParameter("gender").equalsIgnoreCase("female")) {
 			account.setGender(Account.Gender.FEMALE);
 		} else {
 			account.setGender(Account.Gender.MALE);
@@ -88,11 +90,15 @@ public class RegistrationServlet extends HttpServlet {
 			}
 		} catch (GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
-			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
+			if (isAdmin)
+				request.getRequestDispatcher("AdminRegistration.jsp").forward(request, response);
+			else
+				request.getRequestDispatcher("CustomerRegistration.jsp").forward(request, response);
 		}
 
 	}
 
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)

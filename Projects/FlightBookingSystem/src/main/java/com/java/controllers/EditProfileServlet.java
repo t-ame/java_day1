@@ -42,8 +42,8 @@ public class EditProfileServlet extends HttpServlet {
 
 		
 		HttpSession session = request.getSession();
-		if (session == null) {
-			response.sendError(403);
+		if (session == null || session.getAttribute("userdetails") == null) {
+			request.getRequestDispatcher("AdminLogin.jsp").forward(request, response);
 			return;
 		}
 		User user = (User) session.getAttribute("userdetails");

@@ -28,7 +28,7 @@ public class JspToJspServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		
-		request.getRequestDispatcher((String)request.getAttribute("foward_jsp")).forward(request, response);
+		request.getRequestDispatcher(request.getParameter("foward_jsp")).forward(request, response);
 		
 	}
 

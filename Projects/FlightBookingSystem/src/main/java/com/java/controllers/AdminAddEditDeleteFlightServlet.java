@@ -1,6 +1,7 @@
 package com.java.controllers;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,7 +25,7 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	final FlightService flight_service;
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -42,21 +43,26 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		if (request.getRequestURI().contains("addflight")) {
-			String airline = (String) request.getAttribute("airline");
-			String source = (String) request.getAttribute("source");
-			String destination = (String) request.getAttribute("destination");
-			Integer seats = Integer.parseInt((String) request.getAttribute("seats"));
-			Float price = Float.parseFloat((String) request.getAttribute("price"));
-			LocalDateTime departureDate = LocalDateTime.parse((String) request.getAttribute("depart_time"), formatter);
-			LocalDateTime arrivalDate = LocalDateTime.parse((String) request.getAttribute("arrive_time"), formatter);
+			String airline = request.getParameter("airline");
+			String source = request.getParameter("source");
+			String destination = request.getParameter("destination");
+			Integer seats = Integer.parseInt(request.getParameter("seats"));
+			Float price = Float.parseFloat(request.getParameter("price"));
+			LocalDate departureDate = LocalDate.parse(request.getParameter("depart_time"), formatter);
+			LocalDate arrivalDate = LocalDate.parse(request.getParameter("arrive_time"), formatter);
 			FlightTemplate flight = new FlightTemplate(airline, source, destination, departureDate, arrivalDate, seats,
 					price);
+			
+			System.out.println(flight);
 
-			if((boolean)request.getAttribute("update")) {
+			String tester = request.getParameter("update");
+			
+			if(tester!=null && tester.equalsIgnoreCase("true")) {
 				request.setAttribute("flight", flight);
 				return;
 			}
 			
+
 			try {
 				flight_service.addFlight(flight);
 			} catch (GeneralException e) {
@@ -64,7 +70,7 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 				request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 			}
 			request.setAttribute("successMsg", "You have successfully updated the flights");
-			request.getRequestDispatcher("SuccessPage.jsp").forward(request, response);
+			request.getRequestDispatcher("AdminHome.jsp").forward(request, response);
 
 		} else if (request.getRequestURI().contains("changeflight")) {
 			List<FlightTemplate> flights = null;

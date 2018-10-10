@@ -1,5 +1,6 @@
 package com.java.components;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -9,8 +10,8 @@ public class FlightTemplate {
 	private String airline;
 	private String from;
 	private String to;
-	private LocalDateTime departureTime;
-	private LocalDateTime arrivalTime;
+	private LocalDate departureTime;
+	private LocalDate arrivalTime;
 	private int seats;
 	private int availableSeats;
 	private float price;
@@ -19,8 +20,8 @@ public class FlightTemplate {
 		super();
 	}
 
-	public FlightTemplate(String airline, String from, String to, LocalDateTime departureTime,
-			LocalDateTime arrivalTime, int seats, float price) {
+	public FlightTemplate(String airline, String from, String to, LocalDate departureTime,
+			LocalDate arrivalTime, int seats, float price) {
 		super();
 		this.airline = airline;
 		this.from = from;
@@ -31,6 +32,13 @@ public class FlightTemplate {
 		this.price = price;
 	}
 	
+	@Override
+	public String toString() {
+		return "FlightTemplate [id=" + id + ", airline=" + airline + ", from=" + from + ", to=" + to
+				+ ", departureTime=" + departureTime + ", arrivalTime=" + arrivalTime + ", seats=" + seats
+				+ ", availableSeats=" + availableSeats + ", price=" + price + "]";
+	}
+
 	public boolean hasRoom() {
 		return availableSeats > 0;
 	}
@@ -67,19 +75,19 @@ public class FlightTemplate {
 		this.to = to;
 	}
 
-	public LocalDateTime getDepartureTime() {
+	public LocalDate getDepartureTime() {
 		return departureTime;
 	}
 
-	public void setDepartureTime(LocalDateTime departureTime) {
+	public void setDepartureTime(LocalDate departureTime) {
 		this.departureTime = departureTime;
 	}
 
-	public LocalDateTime getArrivalTime() {
+	public LocalDate getArrivalTime() {
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(LocalDateTime arrivalTime) {
+	public void setArrivalTime(LocalDate arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
 

@@ -86,7 +86,7 @@ public class CustomerBookingServlet extends HttpServlet {
 					flight_service.addBooking(flightTemp);
 
 					request.setAttribute("successMsg","You have successfully booked your flight");
-					request.getRequestDispatcher("SuccessPage.jsp").forward(request, response);
+					request.getRequestDispatcher("CustomerHome.jsp").forward(request, response);
 					
 				} catch (GeneralException e) {
 					request.setAttribute("exceptionMsg","Something went wrong: "+e.getMessage());

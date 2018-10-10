@@ -13,8 +13,10 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 import com.java.components.BookedFlight;
 import com.java.components.FlightTemplate;
+import com.java.components.User;
 import com.java.exception.GeneralException;
 import com.java.utils.MyDataSource;
+import com.java.utils.RepositorySupport;
 
 public class FlightRepository {
 
@@ -48,7 +50,7 @@ public class FlightRepository {
 
 	public FlightTemplate getFlightById(int id) throws GeneralException {
 
-		FlightTemplate flight = new FlightTemplate();
+		FlightTemplate flight = null;
 		String fetchFlightSQL = "select * from scheduled_flights where id=?";
 
 		try (Connection conn = ds.getConnection();
@@ -57,20 +59,10 @@ public class FlightRepository {
 			fetchFlightSt.setInt(1, id);
 			ResultSet set = fetchFlightSt.executeQuery();
 
-			while (set.next()) {
-				flight.setAirline(set.getString("airline"));
-				flight.setArrivalTime(
-						set.getDate("arrival_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setDepartureTime(
-						set.getDate("departure_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setFrom(set.getString("from"));
-				flight.setTo(set.getString("to"));
-				flight.setPrice(set.getFloat("cost"));
-				flight.setSeats(set.getInt("seats"));
-				flight.setAvailableSeats(set.getInt("available_seats"));
-				flight.setId(set.getInt("id"));
-			}
-
+			if(set.getFetchSize() > 0) {
+				flight = RepositorySupport.mapToScheduled(set).get(0);
+			} 
+			
 			set.close();
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to retrieve flight: " + e.getMessage());
@@ -82,10 +74,9 @@ public class FlightRepository {
 	public List<FlightTemplate> getAllFlightsBetween(String departure, String arrival, LocalDate date)
 			throws GeneralException {
 
-		List<FlightTemplate> flights = new ArrayList<>();
-		FlightTemplate flight = new FlightTemplate();
+		List<FlightTemplate> flights = null;
 
-		String fetchFlightsSQL = "select * from scheduled_flights where from=? and to=? and departure_date=?";
+		String fetchFlightsSQL = "select * from scheduled_flights where source=? and destination=? and departure_date=?";
 
 		try (Connection conn = ds.getConnection();
 				PreparedStatement fetchFlightsSt = conn.prepareStatement(fetchFlightsSQL);) {
@@ -96,20 +87,7 @@ public class FlightRepository {
 
 			ResultSet set = fetchFlightsSt.executeQuery();
 
-			while (set.next()) {
-				flight.setAirline(set.getString("airline"));
-				flight.setArrivalTime(
-						set.getDate("arrival_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setDepartureTime(
-						set.getDate("departure_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setFrom(set.getString("from"));
-				flight.setTo(set.getString("to"));
-				flight.setPrice(set.getFloat("cost"));
-				flight.setSeats(set.getInt("seats"));
-				flight.setAvailableSeats(set.getInt("available_seats"));
-				flight.setId(set.getInt("id"));
-				flights.add(flight);
-			}
+			flights = RepositorySupport.mapToScheduled(set);
 
 			set.close();
 		} catch (SQLException e) {
@@ -121,8 +99,8 @@ public class FlightRepository {
 
 	public void addBooking(BookedFlight flight) throws GeneralException {
 
-		String insertBookingSQL = "insert into booked_flights (id, airline, passenger_name, from, to, departure_time, arrival_time, userId, flightId)\n"
-				+ "values (bookingIdGen.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String insertBookingSQL = "insert into booked_flights (airline, passenger_name, source, destination, departure_time, arrival_time, userId, flightId)\n"
+				+ "values (?, ?, ?, ?, ?, ?, ?, ?)";
 		String getAvSeatsSQL = "select available_seats from scheduled_flights where id=?";
 		String updateSeatsSQL = "update scheduled_flights set available_seats=? where id=?";
 
@@ -138,8 +116,8 @@ public class FlightRepository {
 			insertBookingSt.setString(2, flight.getPassengerName());
 			insertBookingSt.setString(3, flight.getFrom());
 			insertBookingSt.setString(4, flight.getTo());
-			insertBookingSt.setDate(5, java.sql.Date.valueOf(flight.getDepartureTime().toLocalDate()));
-			insertBookingSt.setDate(6, java.sql.Date.valueOf(flight.getArrivalTime().toLocalDate()));
+			insertBookingSt.setDate(5, java.sql.Date.valueOf(flight.getDepartureTime()));
+			insertBookingSt.setDate(6, java.sql.Date.valueOf(flight.getArrivalTime()));
 			insertBookingSt.setInt(7, flight.getUserId());
 			insertBookingSt.setInt(8, flight.getFlightId());
 
@@ -203,16 +181,16 @@ public class FlightRepository {
 
 	public void addFlight(FlightTemplate flight) throws GeneralException {
 
-		String insertUserSQL = "insert into scheduled_flights (id, airline, from, to, departure_date, arrival_date, cost, seats, available_seats)\n"
-				+ "values (flightIdGen.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+		String insertUserSQL = "insert into scheduled_flights (airline, source, destination, departure_date, arrival_date, cost, seats, available_seats)\n"
+				+ "values (?, ?, ?, ?, ?, ?, ?, ?)";
+		
 		try (Connection conn = ds.getConnection();
 				PreparedStatement insertUserSt = conn.prepareStatement(insertUserSQL);) {
 			insertUserSt.setString(1, flight.getAirline());
 			insertUserSt.setString(2, flight.getFrom());
 			insertUserSt.setString(3, flight.getTo());
-			insertUserSt.setDate(4, java.sql.Date.valueOf(flight.getDepartureTime().toLocalDate()));
-			insertUserSt.setDate(5, java.sql.Date.valueOf(flight.getArrivalTime().toLocalDate()));
+			insertUserSt.setDate(4, java.sql.Date.valueOf(flight.getDepartureTime()));
+			insertUserSt.setDate(5, java.sql.Date.valueOf(flight.getArrivalTime()));
 			insertUserSt.setFloat(6, flight.getPrice());
 			insertUserSt.setInt(7, flight.getSeats());
 			insertUserSt.setInt(8, flight.getSeats());
@@ -229,7 +207,7 @@ public class FlightRepository {
 
 	public void updateFlight(FlightTemplate flight) throws GeneralException {
 
-		String updateFlightSQL = "update scheduled_flights set airline=?, from=?, to=?, "
+		String updateFlightSQL = "update scheduled_flights set airline=?, source=?, destination=?, "
 				+ "departure_date=?, arrival_date=?, cost=?, seats=?, available_seats=? where id=?";
 		String checkSeatsSQL = "select available_seats, seats from scheduled_flights where id=?";
 
@@ -257,8 +235,8 @@ public class FlightRepository {
 			updateFlightSt.setString(1, flight.getAirline());
 			updateFlightSt.setString(2, flight.getFrom());
 			updateFlightSt.setString(3, flight.getTo());
-			updateFlightSt.setDate(4, java.sql.Date.valueOf(flight.getDepartureTime().toLocalDate()));
-			updateFlightSt.setDate(5, java.sql.Date.valueOf(flight.getArrivalTime().toLocalDate()));
+			updateFlightSt.setDate(4, java.sql.Date.valueOf(flight.getDepartureTime()));
+			updateFlightSt.setDate(5, java.sql.Date.valueOf(flight.getArrivalTime()));
 			updateFlightSt.setFloat(6, flight.getPrice());
 			updateFlightSt.setInt(7, flight.getSeats());
 			updateFlightSt.setInt(8, seats - takenSeats);
@@ -294,7 +272,7 @@ public class FlightRepository {
 	// used by customer to view booking
 	public BookedFlight getBooking(int id) throws GeneralException {
 
-		BookedFlight flight = new BookedFlight();
+		BookedFlight flight = null;
 		String fetchBookSQL = "select * from booked_flights where id=?";
 
 		try (Connection conn = ds.getConnection();
@@ -303,19 +281,9 @@ public class FlightRepository {
 			fetchBookSt.setInt(1, id);
 			ResultSet set = fetchBookSt.executeQuery();
 
-			while (set.next()) {
-				flight.setAirline(set.getString("airline"));
-				flight.setArrivalTime(
-						set.getDate("arrival_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setDepartureTime(
-						set.getDate("departure_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setFrom(set.getString("from"));
-				flight.setTo(set.getString("to"));
-				flight.setPassengerName(set.getString("passenger_name"));
-				flight.setUserId(set.getInt("userId"));
-				flight.setFlightId(set.getInt("flightId"));
-				flight.setId(set.getInt("id"));
-			}
+			if(set.getFetchSize() > 0) {
+				flight = RepositorySupport.mapToBooked(set).get(0);
+			} 
 
 			set.close();
 		} catch (SQLException e) {
@@ -328,8 +296,7 @@ public class FlightRepository {
 	// to be used by Admin
 	public List<FlightTemplate> getAllFlights() throws GeneralException {
 
-		List<FlightTemplate> flights = new ArrayList<>();
-		FlightTemplate flight = new FlightTemplate();
+		List<FlightTemplate> flights = null;
 
 		String fetchFlightsSQL = "select * from scheduled_flights";
 
@@ -338,20 +305,8 @@ public class FlightRepository {
 
 			ResultSet set = fetchFlightsSt.executeQuery();
 
-			while (set.next()) {
-				flight.setAirline(set.getString("airline"));
-				flight.setArrivalTime(
-						set.getDate("arrival_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setDepartureTime(
-						set.getDate("departure_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setFrom(set.getString("from"));
-				flight.setTo(set.getString("to"));
-				flight.setPrice(set.getFloat("cost"));
-				flight.setSeats(set.getInt("seats"));
-				flight.setAvailableSeats(set.getInt("available_seats"));
-				flight.setId(set.getInt("id"));
-				flights.add(flight);
-			}
+			flights = RepositorySupport.mapToScheduled(set);
+			System.out.println(flights);
 
 			set.close();
 		} catch (SQLException e) {
@@ -364,8 +319,7 @@ public class FlightRepository {
 	// to be used by Admin
 	public List<BookedFlight> getAllBookings() throws GeneralException {
 
-		List<BookedFlight> flights = new ArrayList<>();
-		BookedFlight flight = new BookedFlight();
+		List<BookedFlight> flights = null;
 		String fetchBookSQL = "select * from booked_flights";
 
 		try (Connection conn = ds.getConnection();
@@ -373,24 +327,32 @@ public class FlightRepository {
 
 			ResultSet set = fetchBookSt.executeQuery();
 
-			while (set.next()) {
-				flight.setAirline(set.getString("airline"));
-				flight.setArrivalTime(
-						set.getDate("arrival_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setDepartureTime(
-						set.getDate("departure_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				flight.setFrom(set.getString("from"));
-				flight.setTo(set.getString("to"));
-				flight.setPassengerName(set.getString("passenger_name"));
-				flight.setUserId(set.getInt("userId"));
-				flight.setFlightId(set.getInt("flightId"));
-				flight.setId(set.getInt("id"));
-				flights.add(flight);
-			}
+			flights = RepositorySupport.mapToBooked(set);
 			
 			set.close();
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to retrieve bookings: " + e.getMessage());
+		}
+
+		return flights;
+	}
+	
+	public List<BookedFlight> getUserHistory(User user) throws GeneralException{
+
+		List<BookedFlight> flights = null;
+		String fetchBookSQL = "select * from booked_flights where userId=?";
+
+		try (Connection conn = ds.getConnection();
+				PreparedStatement fetchBookSt = conn.prepareStatement(fetchBookSQL);) {
+
+			fetchBookSt.setInt(1, user.getId());
+			ResultSet set = fetchBookSt.executeQuery();
+
+			flights = RepositorySupport.mapToBooked(set);
+			
+			set.close();
+		} catch (SQLException e) {
+			throw new GeneralException("Unable to retrieve booking history: " + e.getMessage());
 		}
 
 		return flights;

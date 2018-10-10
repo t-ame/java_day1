@@ -23,7 +23,7 @@ import com.java.services.FlightService;
 @WebServlet("/flightsearch")
 public class CustomerSearchServlet extends HttpServlet {
 
-	FlightService service;
+	FlightService service = new FlightService();
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,11 +43,12 @@ public class CustomerSearchServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		
-		String departure = (String) request.getAttribute("departure");
-		String arrival = (String) request.getAttribute("destination");
-		LocalDate date = LocalDate.parse((String) request.getAttribute("departure_date"),
+		String departure = request.getParameter("departure");
+		String arrival = request.getParameter("destination");
+		LocalDate date = LocalDate.parse(request.getParameter("departure_date"),
 				DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		if (!date.isBefore(LocalDate.now())) {
+		System.out.println(date);
+		if (date.isBefore(LocalDate.now())) {
 			request.setAttribute("errorMsg", "Departure date must be a future date!");
 		}
 		List<FlightTemplate> flightList = null;

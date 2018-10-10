@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
@@ -15,6 +18,7 @@ import com.java.components.User;
 import com.java.exception.GeneralException;
 import com.java.utils.MyDataSource;
 import com.java.utils.MyFlyway;
+import com.java.utils.RepositorySupport;
 
 public class CutomerRepository {
 
@@ -46,9 +50,8 @@ public class CutomerRepository {
 
 	public User getUser(String userName)  throws GeneralException{
 
-		User user = new User();
-		Account account = new Account();
-		String fetchUserSQL = "select * from Customers where username= ?";
+		User user = null;
+		String fetchUserSQL = "select * from Customers where user_name= ?";
 
 		try (Connection conn = ds.getConnection();
 				PreparedStatement fetchUserSt = conn.prepareStatement(fetchUserSQL);) {
@@ -56,28 +59,16 @@ public class CutomerRepository {
 			fetchUserSt.setString(1, userName.toUpperCase());
 			ResultSet set = fetchUserSt.executeQuery();
 
-			while (set.next()) {
-				user.setId(set.getInt("id"));
-				account.setFirstName(set.getString("first_name"));
-				account.setLastName(set.getString("last_name"));
-				account.setAddress(set.getString("address"));
-				account.setUserName(set.getString("user_name"));
-				account.setDateOfBirth(
-						set.getDate("date_of_birth").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-				account.setPassword(set.getString("password"));
-				if (set.getString("gender").equalsIgnoreCase("female")) {
-					account.setGender(Account.Gender.FEMALE);
-				} else {
-					account.setGender(Account.Gender.MALE);
-				}
-			}
-			user.setAdmin(false); 
-			user.setAccount(account);
+			if(set.getFetchSize() > 0) {
+				user = RepositorySupport.mapToUser(set, true).get(0);
+			} 
 			
 			set.close();
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to retrieve user: " + e.getMessage());
-		}	
+		} catch(PatternSyntaxException e) {
+			throw new GeneralException("Invalid address, contains special characters : " + e.getMessage());
+		}
 		
 		return user;
 	}
@@ -89,20 +80,21 @@ public class CutomerRepository {
 		}
 		Account account = user.getAccount();
 		
-		String insertUserSQL = "insert into Customers (id, first_name, last_name, user_name, address, date_of_birth, gender)\n" + 
-				"values (custIdGen.nextval, ?, ?, ?, ?, ?, ?)";
+		String insertUserSQL = "insert into Customers (first_name, last_name, user_name, passwords, address, date_of_birth, gender)\n" + 
+				"values (?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = ds.getConnection();
 				PreparedStatement insertUserSt = conn.prepareStatement(insertUserSQL);) {
 			insertUserSt.setString(1, account.getFirstName().toUpperCase());
 			insertUserSt.setString(2, account.getLastName().toUpperCase());
 			insertUserSt.setString(3, account.getUserName().toUpperCase());
-			insertUserSt.setString(4, account.getAddress().toUpperCase());
-			insertUserSt.setDate(5, java.sql.Date.valueOf(account.getDateOfBirth()));
+			insertUserSt.setString(4, account.getPassword().toUpperCase());
+			insertUserSt.setString(5, account.getConcatAddress().toUpperCase());
+			insertUserSt.setDate(6, java.sql.Date.valueOf(account.getDateOfBirth()));
 			if(account.getGender() == Account.Gender.FEMALE) {
-				insertUserSt.setString(6, "female".toUpperCase());
+				insertUserSt.setString(7, "female".toUpperCase());
 			} else {
-				insertUserSt.setString(6, "male".toUpperCase());
+				insertUserSt.setString(7, "male".toUpperCase());
 			}
 			
 			insertUserSt.executeUpdate(); 
@@ -120,7 +112,7 @@ public class CutomerRepository {
 		}
 		Account account = user.getAccount();
 		
-		String updateUserSQL = "update Customers set first_name=?, last_name=?, user_name=?, "
+		String updateUserSQL = "update Customers set first_name=?, last_name=?, user_name=?, passwords=?"
 				+ 								"address=?, date_of_birth=?, gender=? where user_name=?";
 
 		try (Connection conn = ds.getConnection();
@@ -128,14 +120,15 @@ public class CutomerRepository {
 
 			updateUserSt.setString(1, account.getFirstName().toUpperCase());
 			updateUserSt.setString(2, account.getLastName().toUpperCase());
-			updateUserSt.setString(3, account.getAddress().toUpperCase());
-			updateUserSt.setDate(4, java.sql.Date.valueOf(account.getDateOfBirth()));
+			updateUserSt.setString(3, account.getConcatAddress().toUpperCase());
+			updateUserSt.setString(4, account.getPassword().toUpperCase());
+			updateUserSt.setDate(5, java.sql.Date.valueOf(account.getDateOfBirth()));
 			if(account.getGender() == Account.Gender.FEMALE) {
-				updateUserSt.setString(5, "female".toUpperCase());
+				updateUserSt.setString(6, "female".toUpperCase());
 			} else {
-				updateUserSt.setString(5, "male".toUpperCase());
+				updateUserSt.setString(6, "male".toUpperCase());
 			}
-			updateUserSt.setString(6, account.getUserName().toUpperCase());
+			updateUserSt.setString(7, account.getUserName().toUpperCase());
 			
 			updateUserSt.executeUpdate();  
 			conn.commit();
