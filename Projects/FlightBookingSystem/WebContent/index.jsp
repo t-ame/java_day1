@@ -33,7 +33,7 @@ body, html {
 	/* The image used */
 	background-image: url("./539327295-612x612.jpg");
 	/* Half height */
-	height: 100%;
+	height: 50%;
 	/* Center and scale the image nicely */
 	background-position: center;
 	background-repeat: no-repeat;
@@ -56,22 +56,9 @@ body, html {
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 
-				<li class="nav-item"><a class="nav-link" href="#">Link</a></li>
 				<li class="nav-item"><a class="nav-link"
 					href="./CustomerFlightSearch.jsp">Find flight</a></li>
-				<li class="nav-item dropdown"><a
-					class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-					role="button" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false"> Dropdown </a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="./CustomerFlightSearch.jsp">Action</a>
-						<a class="dropdown-item" href="#">Another action</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Something else here</a>
-					</div></li>
-				<li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a>
-				</li>
-
+				
 			</ul>
 
 
@@ -79,27 +66,15 @@ body, html {
 
 				<c:if test="${sessionScope.userdetails != null}">
 
-					<!-- <button type="button" class="btn btn-primary dropdown-toggle"
-						data-toggle="dropdown">Profile</button> -->
-						
-
-					<!-- <div class="dropdown-menu"> -->
-						<a class="dropdown-item" href="./AdminHome.jsp">My Account</a> <a
-							class="dropdown-item" href="./logout">Logout</a>
-					<!-- </div> -->
+						<a class="dropdown-item" href="./navhome">My Account</a> 
+						<a class="dropdown-item" href="./logout">Logout</a>
 
 				</c:if>
 
 				<c:if test="${sessionScope.userdetails == null}">
-					<!-- <button type="button" class="btn btn-primary dropdown-toggle"
-						data-toggle="dropdown">Login</button> -->
 
-					<!-- <div class="dropdown-menu"> -->
-						<a class="dropdown-item" href="./navlogin">Admin Login</a> <a
-							class="dropdown-item" href="./navlogin">Customer
-							Login</a>
+						<a class="dropdown-item" href="./navlogin">Login</a>
 
-					<!-- </div> -->
 				</c:if>
 
 			</div>
@@ -114,7 +89,7 @@ body, html {
 	<form class="needs-validation" action="./flightsearch" method="post">
 		<div
 			style="padding: 2rem 1rem; margin-bottom: 2rem; background-color: #e9ecef; border-radius: .3rem;">
-			<h1>Flight Query</h1>
+			<h1>Flight Search</h1>
 			<div class="row mt-4">
 				<div class="col-md-3">
 					<label for="departure">From: </label> <select required

@@ -55,9 +55,9 @@ public class AdminRepository {
 			fetchUserSt.setString(1, userName.toUpperCase());
 			ResultSet set = fetchUserSt.executeQuery();
 			
-			if(set.getFetchSize() > 0) {
+//			if(set.getFetchSize() > 0) {
 				user = RepositorySupport.mapToUser(set, true).get(0);
-			} 
+//			} 
 			
 			set.close();
 		} catch (SQLException e) {

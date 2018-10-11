@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8" isELIgnored="false" import="java.util.List"%>
 <!DOCTYPE html>
+
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="com.java.components.BookedFlight"%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -17,8 +20,11 @@
 <body>
 
 
+	
+
+
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="./index.jsp">Home</a>
+		<a class="navbar-brand" href="./index.jsp">Toya Air</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -28,31 +34,17 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				
-				<li class="nav-item"><a class="nav-link" href="#">Link</a></li>
-				<li class="nav-item"><a class="nav-link" href="./flightsearch">Find flight</a></li>
-				<li class="nav-item dropdown"><a
-					class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-					role="button" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false"> Dropdown </a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="./flightsearch">Action</a> <a
-							class="dropdown-item" href="#">Another action</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Something else here</a>
-					</div></li>
-				<li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a>
-				</li>
+
+				<li class="nav-item"><a class="nav-link" href="./CustomerFlightSearch.jsp">Find flight</a>
 
 			</ul>
 
-			<input type="hidden" name="isAdmin" value="false">
-
-			<a class="nav-link" href="./navaccount">My Accounts <span
+			<input type="hidden" name="isAdmin" value="true"> <a
+				class="nav-link" href="./navaccount">My Accounts <span
 				class="sr-only">(current)</span></a> <a class="nav-link" href="./logout">
 				Logout<span class="sr-only">(current)</span>
 			</a>
-			
+
 
 		</div>
 	</nav>
@@ -60,11 +52,101 @@
 
 
 
-<h5 style="color: Green"><b>${requestScope.successMsg}</b></h5>
-	<% request.setAttribute("successMsg", ""); %>
+
+	<div style="display: flex; height: 100%">
+
+		<h5 style="color: Green">
+			<b>${requestScope.successMsg}</b>
+		</h5>
+		<%
+			request.setAttribute("successMsg", "");
+		%>
+		<div style="background-color: slateblue; width: 150px" class="floaters">
+
+			<ul style="list-style-type: none">
+			
+				
+				<li><a style="color: white" href="./CustomerFlightSearch.jsp">Find flight</a></li>
+				
+				<li><a style="color: white" href="./CustomerFlightSearch.jsp">Book a flight</a></li>
+				
+			</ul>
+
+		</div>
+
+		<div class="floaters"
+			style="margin-left: 10px; background-color: lightgray; width: 850px">
 
 
-<h1>Customer Home!</h1>
+			<h4>${requestScope.errorMsg}</h4>
+			<%
+				request.setAttribute("errorMsg", "");
+			%>
+
+			<%
+				List<BookedFlight> flights = (List<BookedFlight>) session.getAttribute("flights");
+				/*   System.out.println(flights); */
+			%>
+
+			<c:if test="${sessionScope.flights !=null}">
+				<div class="card mb-3">
+					<div class="card-header" style="text-align: center">
+						<h3>
+							<i class="fas fa-table">Booking History</i>
+						</h3>
+					</div>
+					<div class="card-body">
+						<c:if test="${flightList.size()==0}">
+							<div class="alert alert-warning" role="alert">No flights
+								have been booked.</div>
+						</c:if>
+						<c:set var="count" value="${1}" />
+						<c:if test="${flightList.size()>0}">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="dataTable" width="100%"
+									cellspacing="0">
+									<thead>
+										<tr>
+											<th scope="col">#</th>
+											<td scope="col">Airline</td>
+											<td scope="col">Passenger</td>
+											<td scope="col">Source</td>
+											<td scope="col">Destination</td>
+											<td scope="col">Departure Time</td>
+											<td scope="col">Arrival Time</td>
+										</tr>
+									</thead>
+									<tbody>
+										<%
+											for (int i = 0; i < flights.size(); ++i) {
+										%>
+										<tr>
+											<th scope="row">1</th>
+											<td><%=flights.get(i).getAirline()%></td>
+											<td><%=flights.get(i).getPassengerName()%></td>
+											<td><%=flights.get(i).getFrom()%></td>
+											<td><%=flights.get(i).getTo()%></td>
+											<td><%=flights.get(i).parseDate(0)%></td>
+											<td><%=flights.get(i).parseDate(1)%></td>
+										</tr>
+										<%
+											}
+										%>
+
+									</tbody>
+								</table>
+							</div>
+						</c:if>
+					</div>
+				</div>
+			</c:if>
+
+
+		</div>
+
+
+
+	</div>
 
 
 

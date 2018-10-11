@@ -3,6 +3,7 @@ package com.java.controllers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -47,28 +48,34 @@ public class CustomerSearchServlet extends HttpServlet {
 		String arrival = request.getParameter("destination");
 		LocalDate date = LocalDate.parse(request.getParameter("departure_date"),
 				DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		System.out.println(date);
+		System.out.println(date.toString());
 		if (date.isBefore(LocalDate.now())) {
 			request.setAttribute("errorMsg", "Departure date must be a future date!");
 		}
 		List<FlightTemplate> flightList = null;
 		
+		
 		try {
+			
+
+			
 			flightList = service.getAllFlightsBetween(departure, arrival, date);
-		} catch (GeneralException e) {
+//			System.out.println(flightList);
+		} catch (DateTimeParseException | GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
 			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
 		}
 		
+		
 		if (flightList != null) {
-			HttpSession session = request.getSession();
-			if (session != null)
-				session.setAttribute("flights", flightList);
+			HttpSession session = request.getSession(true);
+			session.setAttribute("flights", flightList);
 			request.setAttribute("flights", flightList);
 		} else {
 			request.setAttribute("errorMsg", "No flights found!!!");
 		}
 		request.getRequestDispatcher("CustomerFlightSearch.jsp").forward(request, response);
+		
 	}
 
 	/**

@@ -39,6 +39,9 @@ public class LoginServlet extends HttpServlet {
 
 		String username = request.getParameter("userName");
 		String password = request.getParameter("password");
+		
+		System.out.println(username+" "+password);
+		
 		boolean isAdmin;
 		if (request.getParameter("isAdmin").equalsIgnoreCase("true")) {
 			isAdmin = true;
@@ -52,11 +55,19 @@ public class LoginServlet extends HttpServlet {
 
 		try {
 
+
+			HttpSession session = request.getSession(true);
+			session.setMaxInactiveInterval(0);
+			session.setAttribute("username", username);
+			session.setAttribute("isAdmin", isAdmin);
+			
 			if (isAdmin) {
 				user = adminservice.getUser(username);
+				System.out.println(user+" admin");
 				if (user != null && user.getId() >0) {
 					if (user.getAccount().getPassword().equalsIgnoreCase(password)) {
-						request.getRequestDispatcher("./navhome").forward(request, response);
+						request.getRequestDispatcher("./displayhome").include(request, response);
+						request.getRequestDispatcher("AdminHome.jsp").forward(request, response);
 					} else {
 						request.setAttribute("errorMsg", "Invalid username or password!");
 						request.getRequestDispatcher("./AdminLogin.jsp").forward(request, response);
@@ -67,9 +78,11 @@ public class LoginServlet extends HttpServlet {
 				}
 			} else {
 				user = customerservice.getUser(username);
+				System.out.println(user+" user");
 				if (user != null && user.getId() >0) {
-					if (user.getAccount().getPassword().equals(password)) {
-						request.getRequestDispatcher("./navhome").forward(request, response);
+					if (user.getAccount().getPassword().equalsIgnoreCase(password)) {
+						request.getRequestDispatcher("./displayhome").include(request, response);
+						request.getRequestDispatcher("CustomerHome.jsp").forward(request, response);
 					} else {
 						request.setAttribute("errorMsg", "Invalid username or password!");
 						request.getRequestDispatcher("./CustomerLogin.jsp").forward(request, response);
@@ -79,13 +92,8 @@ public class LoginServlet extends HttpServlet {
 					request.getRequestDispatcher("./CustomerLogin.jsp").forward(request, response);
 				}
 			}
-			HttpSession session = request.getSession(true);
-			session.setMaxInactiveInterval(0);
 			session.setAttribute("userdetails", user); // change other servlets using username then remove "username"
 														// and "isAdmin"
-			session.setAttribute("username", username);
-			session.setAttribute("isAdmin", isAdmin);
-
 		} catch (GeneralException e) {
 			request.setAttribute("exceptionMsg", "Something went wrong: " + e.getMessage());
 			request.getRequestDispatcher("./naverror").forward(request, response);

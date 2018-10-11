@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" isELIgnored="false"%>
+	pageEncoding="UTF-8" isELIgnored="false" import="com.java.components.FlightTemplate"%>
 <%@ page import="java.util.List"%>
 <!DOCTYPE html>
 
@@ -21,11 +21,58 @@
 
 
 <body>
+
+
+
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="./index.jsp">Toya Air</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+
+				<li class="nav-item"><a class="nav-link"
+					href="./CustomerFlightSearch.jsp">Find flight</a></li>
+
+			</ul>
+
+			<div>
+
+				<c:if test="${sessionScope.userdetails != null}">
+
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item"><a class="nav-link"
+							href="./AdminHome.jsp">Profile</a></li>
+					</ul>
+
+				</c:if>
+
+				<c:if test="${sessionScope.userdetails == null}">
+
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item"><a href="./CustomerLogin.jsp">Login</a></li>
+					</ul>
+				</c:if>
+			</div>
+
+		</div>
+	</nav>
+
+
+
+
+
 	<main role="main" class="container">
 	<form class="needs-validation" action="./flightsearch" method="post">
 		<div
 			style="padding: 2rem 1rem; margin-bottom: 2rem; background-color: #e9ecef; border-radius: .3rem;">
-			<h1>Flight Query</h1>
+			<h1>Flight Search</h1>
 			<div class="row mt-4">
 				<div class="col-md-3">
 					<label for="departure">From: </label> <select required
@@ -43,7 +90,7 @@
 
 					<label for="destination">To: </label> <select required
 						name="destination" class="form-control" >
-						<option disabled>Select</option>
+						<option disabled selected>Select</option>
 						<option value="AL">Alabama</option>
 						<option value="GA">Georgia</option>
 						<option value="IL">Illinois</option>
@@ -64,8 +111,12 @@
 			</div>
 		</div>
 	</form>
-	
-	
+	 
+	 <%
+	 
+	    List<FlightTemplate> flights = (List<FlightTemplate>) session.getAttribute("flights");
+	 
+	 %>
 	
 	
 	<h6 style="color: Red">${requestScope.errorMsg}</h6>
@@ -81,7 +132,8 @@
 					<div class="alert alert-warning" role="alert">Have not found
 						matched records.</div>
 				</c:if>
-				<c:if test="${flightList.size()>0}">
+				<%-- <c:if test="${flightList.size()>0}"> --%>
+				<%if(flights.size()>0) {%>
 					<div class="table-responsive">
 						<table class="table table-bordered" id="dataTable" width="100%"
 							cellspacing="0">
@@ -99,28 +151,38 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach items="${flightList}" var="flight">
+								<%-- <c:forEach items="${flightList}" var="flight"> --%>
+								<%for(int i=0; i<flights.size(); ++i){ %>
 									<tr>
 										<th scope="row">1</th>
-										<td><c:out value="${flight.getAirline()}" /></td>
-										<td><c:out value="${flight.getFrom()}" /></td>
-										<td><c:out value="${flight.getTo()}" /></td>
-										<td><c:out value="${flight.getDepartureTime()}" /></td>
-										<td><c:out value="${flight.getArrivalTime()}" /></td>
-										<td><c:out value="${flight.getAvailableSeats()}" /></td>
-										<td><c:out value="'$'${flight.getCost()}" /></td>
-										<td><a href="/booking/${flight.getId()}">Select</a></td>
+										<td><%= flights.get(i).getAirline() %></td>
+										<td><%= flights.get(i).getFrom() %></td>
+										<td><%= flights.get(i).getTo()%></td>
+										<td><%= flights.get(i).getDepartureTime()%></td>
+										<td><%= flights.get(i).getArrivalTime()%></td>
+										<td><%= flights.get(i).getAvailableSeats()%></td>
+										<td><%= flights.get(i).getPrice()%></td>
+										<td><a href="./editflight/<%= flights.get(i).getId()%>">Edit</a> <a href="./deleteflight/<%= flights.get(i).getId()%>">Delete</a></td>
 									</tr>
-								</c:forEach>
+									<%} %>
+								<%-- </c:forEach> --%>
 							</tbody>
 						</table>
 					</div>
-				</c:if>
+					<%} %>
+			<%-- 	</c:if> --%>
 			</div>
 		</div>
 	</c:if> 
 	
 	</main>
+
+
+
+
+
+<script type="text/javascript" src="WebContent/bootsrap/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>
 
 </body>
 

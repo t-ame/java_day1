@@ -100,7 +100,7 @@ public class Account {
 	}
 
 	public void setConcatAddress(String addr) throws PatternSyntaxException{
-		String[] a = addr.split("*");
+		String[] a = addr.split("!");
 		address = new String[a.length-1];
 		for(int i=0; i<a.length-1; ++i)
 			address[i] = a[i];

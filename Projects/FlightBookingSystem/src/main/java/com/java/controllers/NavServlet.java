@@ -32,16 +32,14 @@ public class NavServlet extends HttpServlet {
 
 		String uri = request.getRequestURI();
 		HttpSession session = request.getSession();
-		boolean isAdmin=false;
+		boolean isAdmin = false;
 		if (request.getAttribute("isAdmin") != null || request.getParameter("isAdmin") != null) {
-			if (((boolean)request.getAttribute("isAdmin"))
+			if (((boolean) request.getAttribute("isAdmin"))
 					|| request.getParameter("isAdmin").equalsIgnoreCase("true")) {
 				isAdmin = true;
 			} else {
 				isAdmin = false;
 			}
-		} else {
-			request.getRequestDispatcher("index.jsp").forward(request, response);
 		}
 
 		if (uri.contains("account")) {
@@ -54,17 +52,14 @@ public class NavServlet extends HttpServlet {
 					return;
 				}
 			}
+			
 			request.getRequestDispatcher("EditProfile.jsp").forward(request, response);
 
 		} else if (uri.contains("home")) {
 			if (session == null || session.getAttribute("userdetails") == null) {
-				if (isAdmin) {
-					request.getRequestDispatcher("AdminLogin.jsp").forward(request, response);
-					return;
-				} else {
-					request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
-					return;
-				}
+
+				request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
+
 			}
 			if (isAdmin) {
 				request.getRequestDispatcher("AdminHome.jsp").forward(request, response);
@@ -75,9 +70,9 @@ public class NavServlet extends HttpServlet {
 			}
 
 		} else if (uri.contains("error")) {
-			
+
 			request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
-			
+
 		} else if (uri.contains("registration")) {
 			if (isAdmin) {
 				request.getRequestDispatcher("AdminRegistration.jsp").forward(request, response);
@@ -86,15 +81,10 @@ public class NavServlet extends HttpServlet {
 				request.getRequestDispatcher("CustomerRegistration.jsp").forward(request, response);
 				return;
 			}
-
 		} else if (uri.contains("login")) {
-			if (isAdmin) {
-				request.getRequestDispatcher("AdminLogin.jsp").forward(request, response);
-				return;
-			} else {
-				request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
-				return;
-			}
+
+			System.out.println("Here");
+			request.getRequestDispatcher("CustomerLogin.jsp").forward(request, response);
 
 		}
 

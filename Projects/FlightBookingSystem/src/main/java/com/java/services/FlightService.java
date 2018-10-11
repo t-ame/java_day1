@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.java.components.BookedFlight;
 import com.java.components.FlightTemplate;
+import com.java.components.User;
 //import com.java.components.ScheduledFlight;
 import com.java.exception.GeneralException;
 import com.java.repositories.FlightRepository;
@@ -26,6 +27,12 @@ public class FlightService {
 			throws GeneralException {
 		return repository.getAllFlightsBetween(departure, arrival, date);
 	}
+	
+	public List<FlightTemplate> getAllFlightsToday()
+			throws GeneralException {
+		return repository.getAllFlightsToday();
+	}
+	
 
 	public void addBooking(BookedFlight flight) throws GeneralException {
 		repository.addBooking(flight);
@@ -57,6 +64,12 @@ public class FlightService {
 	public List<BookedFlight> getAllBookings() throws GeneralException {
 
 		return repository.getAllBookings();
+	}
+	
+	// to be used by Admin
+	public List<BookedFlight> getUserHistory(User user) throws GeneralException {
+
+		return repository.getUserHistory(user);
 	}
 
 	public String getErrorMsg() {

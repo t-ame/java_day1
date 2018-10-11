@@ -59,13 +59,17 @@ public class FlightRepository {
 			fetchFlightSt.setInt(1, id);
 			ResultSet set = fetchFlightSt.executeQuery();
 
-			if(set.getFetchSize() > 0) {
-				flight = RepositorySupport.mapToScheduled(set).get(0);
-			} 
-			
+//			if(set.getFetchSize() > 0) {
+
+			flight = RepositorySupport.mapToScheduled(set).get(0);
+//			} 
+
+			System.out.println(set.getFetchSize() + " " + flight);
 			set.close();
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to retrieve flight: " + e.getMessage());
+		} catch (IndexOutOfBoundsException e) {
+			throw new GeneralException("No flight retrieved: " + e.getMessage());
 		}
 
 		return flight;
@@ -84,6 +88,29 @@ public class FlightRepository {
 			fetchFlightsSt.setString(1, departure);
 			fetchFlightsSt.setString(2, arrival);
 			fetchFlightsSt.setDate(3, java.sql.Date.valueOf(date));
+
+			ResultSet set = fetchFlightsSt.executeQuery();
+
+			flights = RepositorySupport.mapToScheduled(set);
+
+			set.close();
+		} catch (SQLException e) {
+			throw new GeneralException("Unable to retrieve flights: " + e.getMessage());
+		}
+
+		return flights;
+	}
+
+	public List<FlightTemplate> getAllFlightsToday() throws GeneralException {
+
+		List<FlightTemplate> flights = null;
+
+		String fetchFlightsSQL = "select * from scheduled_flights where departure_date=?";
+
+		try (Connection conn = ds.getConnection();
+				PreparedStatement fetchFlightsSt = conn.prepareStatement(fetchFlightsSQL);) {
+
+			fetchFlightsSt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
 
 			ResultSet set = fetchFlightsSt.executeQuery();
 
@@ -183,7 +210,7 @@ public class FlightRepository {
 
 		String insertUserSQL = "insert into scheduled_flights (airline, source, destination, departure_date, arrival_date, cost, seats, available_seats)\n"
 				+ "values (?, ?, ?, ?, ?, ?, ?, ?)";
-		
+
 		try (Connection conn = ds.getConnection();
 				PreparedStatement insertUserSt = conn.prepareStatement(insertUserSQL);) {
 			insertUserSt.setString(1, flight.getAirline());
@@ -199,6 +226,8 @@ public class FlightRepository {
 				insertUserSt.executeUpdate();
 				conn.commit();
 			}
+			System.out.println(flight);
+			System.out.println(insertUserSt);
 
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to Add flight to db : " + e.getMessage());
@@ -281,9 +310,9 @@ public class FlightRepository {
 			fetchBookSt.setInt(1, id);
 			ResultSet set = fetchBookSt.executeQuery();
 
-			if(set.getFetchSize() > 0) {
+			if (set.getFetchSize() > 0) {
 				flight = RepositorySupport.mapToBooked(set).get(0);
-			} 
+			}
 
 			set.close();
 		} catch (SQLException e) {
@@ -328,7 +357,7 @@ public class FlightRepository {
 			ResultSet set = fetchBookSt.executeQuery();
 
 			flights = RepositorySupport.mapToBooked(set);
-			
+
 			set.close();
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to retrieve bookings: " + e.getMessage());
@@ -336,8 +365,8 @@ public class FlightRepository {
 
 		return flights;
 	}
-	
-	public List<BookedFlight> getUserHistory(User user) throws GeneralException{
+
+	public List<BookedFlight> getUserHistory(User user) throws GeneralException {
 
 		List<BookedFlight> flights = null;
 		String fetchBookSQL = "select * from booked_flights where userId=?";
@@ -345,12 +374,14 @@ public class FlightRepository {
 		try (Connection conn = ds.getConnection();
 				PreparedStatement fetchBookSt = conn.prepareStatement(fetchBookSQL);) {
 
-			fetchBookSt.setInt(1, user.getId());
-			ResultSet set = fetchBookSt.executeQuery();
+			if (user != null) {
+				fetchBookSt.setInt(1, user.getId());
+				ResultSet set = fetchBookSt.executeQuery();
 
-			flights = RepositorySupport.mapToBooked(set);
-			
-			set.close();
+				flights = RepositorySupport.mapToBooked(set);
+
+				set.close();
+			}
 		} catch (SQLException e) {
 			throw new GeneralException("Unable to retrieve booking history: " + e.getMessage());
 		}

@@ -52,8 +52,6 @@ public class AdminAddEditDeleteFlightServlet extends HttpServlet {
 			LocalDate arrivalDate = LocalDate.parse(request.getParameter("arrive_time"), formatter);
 			FlightTemplate flight = new FlightTemplate(airline, source, destination, departureDate, arrivalDate, seats,
 					price);
-			
-			System.out.println(flight);
 
 			String tester = request.getParameter("update");
 			
