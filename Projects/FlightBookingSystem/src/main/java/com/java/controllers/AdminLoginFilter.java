@@ -41,7 +41,7 @@ public class AdminLoginFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		
-		String uri = req.getRequestURI();
+		String uri = req.getServletPath();
 		
 		System.out.println(uri + " "+ req.getServletPath());
 		
